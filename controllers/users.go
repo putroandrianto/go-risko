@@ -23,11 +23,11 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		utils.JsonErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("Error decoding user: %s", err.Error()))
 		return
 	}
-	if user.Name =="" {
+	if user.Name == "" {
 		utils.JsonErrorResponse(w, http.StatusBadRequest, "Name is required")
 		return
 	}
-	if user.Age == 0 {
+	if user.Age <= 0 {
 		utils.JsonErrorResponse(w, http.StatusBadRequest, "Age is required")
 		return
 	}
