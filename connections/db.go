@@ -16,8 +16,8 @@ var (
 )
 
 func ConnectDB() {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", config.Config(DB_HOST), config.Config(DB_PORT), config.Config(DB_USER), config.Config(DB_PASSWORD), config.Config(DB_NAME))
-	DB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	dsn := fmt.Sprintf("%v:%v@/%v?charset=utf8&parseTime=True", config.DB_USER, config.DB_PASSWORD, config.DB_NAME)
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		log.Println("Error when connecting to database")
@@ -32,3 +32,13 @@ func DBMigrate() {
 	DB.AutoMigrate(&models.User{}, &models.RiskProfile{})
 	fmt.Println("Database migrated")
 }
+
+// func DBConnect() {
+// 	database.DBConn, err = gorm.Open("mysql", "go-risko.db")
+// 	if err != nil {
+// 		panic("failed to connect database")
+// 	}
+// 	fmt.Println("Connected to database")
+// 	database.DBConn.AutoMigrate(&models.User{}, &models.RiskProfile{})
+// 	fmt.Println("Database migrated")
+// }

@@ -1,16 +1,9 @@
 package config
 
-import (
-	"fmt"
-	"os"
+const (
+	WEB_PORT = "8080"
 
-	"github.com/joho/godotenv"
+	DB_USER = "root"
+	DB_PASSWORD = ""
+	DB_NAME = "go-risko"
 )
-
-func Config(key string) string {
-	err := godotenv.Load("env/.env")
-	if err != nil {
-		fmt.Println("Error loading .env file")
-	}
-	return os.Getenv(key)
-}

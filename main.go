@@ -2,10 +2,10 @@ package main
 
 import (
 	"go-risko/app"
-	"go-risko/db"
+	"go-risko/connections"
 )
 
 func main() {
-	db.ConnectDB()
+	connections.ConnectDB()
 	app.StartApp()
 }
