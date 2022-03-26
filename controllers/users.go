@@ -34,12 +34,12 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	
 	var riskProfile data.RiskProfile
 	
-	compareAge := 55 - user.Age
-	if compareAge >= 30 {
+	riskAge := 55 - user.Age
+	if riskAge >= 30 {
 		riskProfile.StockPercent = 72.5
 		riskProfile.BondPercent = 21.5
 		riskProfile.MMPercent = 100 - (riskProfile.StockPercent + riskProfile.BondPercent)
-	} else if compareAge >= 20 {
+	} else if riskAge >= 20 {
 		riskProfile.StockPercent = 54.5
 		riskProfile.BondPercent = 25.5
 		riskProfile.MMPercent = 100 - (riskProfile.StockPercent + riskProfile.BondPercent)
