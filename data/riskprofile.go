@@ -1,4 +1,4 @@
-package models
+package data
 
 type RiskProfile struct {
 	UserId 			uint 	`json:"-"`

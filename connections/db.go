@@ -3,7 +3,7 @@ package connections
 import (
 	"fmt"
 	"go-risko/config"
-	"go-risko/models"
+	"go-risko/data"
 	"log"
 
 	"gorm.io/driver/mysql"
@@ -29,7 +29,7 @@ func ConnectDB() {
 }
 
 func DBMigrate() {
-	DB.AutoMigrate(&models.User{}, &models.RiskProfile{})
+	DB.AutoMigrate(&data.User{}, &data.RiskProfile{})
 	fmt.Println("Database migrated")
 }
 
