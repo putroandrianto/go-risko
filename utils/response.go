@@ -1,25 +1,31 @@
 package utils
 
 import (
+	"go-risko/data"
+
 	"encoding/json"
 	"net/http"
 )
 
-func JsonSuccessResponse(w http.ResponseWriter, statusCode int, message string, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"status": "success",
-		"message": message,
-		"data": data,
+func JsonSuccessResponse(w http.ResponseWriter, Data interface{}, msg string) {
+	result, _ := json.Marshal(data.Response{
+		Code: http.StatusOK,
+		Data: Data,
+		Message: msg,
 	})
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(result)
 }
 
-func JsonErrorResponse(w http.ResponseWriter, statusCode int, message string) {
+func JsonErrorResponse(w http.ResponseWriter, statusCode int, msg string) {
+	result, _ := json.Marshal(data.Response{
+		Code: statusCode,
+		Message: msg,
+	})
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"status": "error",
-		"message": message,
-	})
+	w.Write(result)
 }

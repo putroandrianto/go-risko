@@ -49,7 +49,14 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		riskProfile.MMPercent = 100 - (riskProfile.StockPercent + riskProfile.BondPercent)
 	}
 
-	utils.JsonSuccessResponse(w, http.StatusCreated, "User created", user)
+	user.RiskProfile = &riskProfile
+	result := models.CreateUser(user)
+	if result.Error != nil {
+		utils.JsonErrorResponse(w, http.StatusInternalServerError, "Internal server error: can't create user")
+		return
+	}
+
+	utils.JsonSuccessResponse(w, user, "Success create user")
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +83,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	users := models.GetUsers(limit, offset)
-	utils.JsonSuccessResponse(w, http.StatusOK, "Success get users", users)
+	utils.JsonSuccessResponse(w, users ,"Success get users")
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
@@ -87,7 +94,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	user, result := models.GetUserById(userId)
 	if result.RowsAffected == 1 {
-		utils.JsonSuccessResponse(w, http.StatusOK, "Success ger user", user)
+		utils.JsonSuccessResponse(w, user, "Success ger user")
 	} else {
 		utils.JsonErrorResponse(w, http.StatusNotFound, "User not found")
 	}
