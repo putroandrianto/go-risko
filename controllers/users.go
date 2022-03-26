@@ -1,60 +1,49 @@
 package controllers
 
 import (
-	"net/http"
-
-	"go-risko/connections"
+	"encoding/json"
+	"fmt"
 	"go-risko/models"
+	"go-risko/utils"
+
+	"net/http"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
+	d := json.NewDecoder(r.Body)
+	d.DisallowUnknownFields()
 
-	type NewUser struct {
-		Name     string `json:"name"`
-		Age      int    `json:"age"`
+	var user models.User
+	err := d.Decode(&user)
+	if err != nil {
+		utils.JsonErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("Error decoding user: %s", err.Error()))
+		return
+	}
+	if user.Name =="" {
+		utils.JsonErrorResponse(w, http.StatusBadRequest, "Name is required")
+		return
+	}
+	if user.Age == 0 {
+		utils.JsonErrorResponse(w, http.StatusBadRequest, "Age is required")
+		return
+	}
+	
+	var riskProfile models.RiskProfile
+	
+	compareAge := 55 - user.Age
+	if compareAge >= 30 {
+		riskProfile.StockPercent = 72.5
+		riskProfile.BondPercent = 21.5
+		riskProfile.MMPercent = 100 - (riskProfile.StockPercent + riskProfile.BondPercent)
+	} else if compareAge >= 20 {
+		riskProfile.StockPercent = 54.5
+		riskProfile.BondPercent = 25.5
+		riskProfile.MMPercent = 100 - (riskProfile.StockPercent + riskProfile.BondPercent)
+	} else {
+		riskProfile.StockPercent = 34.5
+		riskProfile.BondPercent = 45.5
+		riskProfile.MMPercent = 100 - (riskProfile.StockPercent + riskProfile.BondPercent)
 	}
 
-	db := connections.DB
-	user := new(models.User)
-	var i = 55
-	switch {
-		case i-user.Age >= 30 :
-			StockPercent := 72.5
-			BondPercent := 21.5
-			MMPercent := 100 - (StockPercent + BondPercent)
-
-			riskProfile := models.RiskProfile{
-				UserId:     user.Id,
-				StockPercent: float32(StockPercent),
-				BondPercent:  float32(BondPercent),
-				MMPercent:    float32(MMPercent),	
-			}
-			db.Create(&riskProfile)
-
-		case i-user.Age >= 20 :
-			StockPercent := 54.5
-			BondPercent := 25.5
-			MMPercent := 100 - (StockPercent + BondPercent)
-
-			riskProfile := models.RiskProfile{
-				UserId:     user.Id,
-				StockPercent: float32(StockPercent),
-				BondPercent:  float32(BondPercent),
-				MMPercent:    float32(MMPercent),
-			}
-			db.Create(&riskProfile)
-
-		case i-user.Age < 20 :
-			StockPercent := 34.5
-			BondPercent := 45.5
-			MMPercent := 100 - (StockPercent + BondPercent)
-
-			riskProfile := models.RiskProfile{
-				UserId:     user.Id,
-				StockPercent: float32(StockPercent),
-				BondPercent:  float32(BondPercent),
-				MMPercent:    float32(MMPercent),
-			}
-			db.Create(&riskProfile)
-	}
+	utils.JsonSuccessResponse(w, http.StatusCreated, "User created", user)
 }
